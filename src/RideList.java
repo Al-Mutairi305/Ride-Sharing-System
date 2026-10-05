@@ -22,14 +22,14 @@ class RideList implements IRideList {
 			prev = current;
 			current = current.getNext();
 		}
-		if (current == list.getHead()) {
+		if (current.equals(list.getHead())) {
 			if (ride.getPickupLocation().compareToIgnoreCase(current.getData().getPickupLocation()) < 0) {
 				list.insertAtFront(ride);
 			} else {
 				list.insertAtBack(ride);
 			}
 		}
-		if (current != list.getHead()) {
+		if (!current.equals(list.getHead())) {
 			if (ride.getPickupLocation().compareToIgnoreCase(current.getData().getPickupLocation()) < 0) {
 				prev.setNext(rideNode);
 				rideNode.setNext(current);
