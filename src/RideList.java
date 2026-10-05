@@ -22,15 +22,20 @@ class RideList implements IRideList {
 			prev = current;
 			current = current.getNext();
 		}
-		if (current.getNext() == null) {
-			list.insertAtBack(ride);
-		}
 		if (current == list.getHead()) {
-			list.insertAtFront(ride);
+			if (ride.getPickupLocation().compareToIgnoreCase(current.getData().getPickupLocation()) < 0) {
+				list.insertAtFront(ride);
+			} else {
+				list.insertAtBack(ride);
+			}
 		}
 		if (current != list.getHead()) {
-			prev.setNext(rideNode);
-			rideNode.setNext(current);
+			if (ride.getPickupLocation().compareToIgnoreCase(current.getData().getPickupLocation()) < 0) {
+				prev.setNext(rideNode);
+				rideNode.setNext(current);
+			} else {
+				list.insertAtBack(ride);
+			}
 		}
 		size++;
 		return true;
@@ -45,7 +50,7 @@ class RideList implements IRideList {
 		while(current.getData().getRideId() != rideId && current.getNext() != null) {
 			current = current.getNext();
 		}
-		if (current.getNext() == null) {
+		if (current.getNext() == null && current.getData().getRideId() != rideId) {
 			return false;
 		}
 		list.remove(rideId);
