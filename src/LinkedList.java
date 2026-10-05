@@ -85,4 +85,16 @@ public class LinkedList<T> {
             current = current.getNext();
         }
     }
+
+    public boolean isEmpty() {
+        return (size == 0);
+    }
+
+    public Node<T> getHead() {
+        return head;
+    }
+
+    public Node<T> getTail() {
+        return tail;
+    }
 }
