@@ -2,17 +2,16 @@ public abstract class Person implements IPerson {
 
     protected String name;
     protected String phoneNumber;
-    protected int ID;
-    protected RideList rideHistory; // TODO: Implement Ride, and RideList classes.
+    protected int id;
 
-    public Person(String name, String phoneNumber, int ID) {
+    public Person(String name, String phoneNumber, int id) {
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.ID = ID;
+        this.id = id;
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -41,12 +40,9 @@ public abstract class Person implements IPerson {
         this.phoneNumber = phoneNumber;
     }
 
-    public LinkedList<Ride> getRideHistory() { // TODO: Implement Ride, and RideList classes.
-
-    }
-
+    
     public String toString() {
-        return "Name: " + name + ", Phone Number: " + phoneNumber + ", ID: " + ID;
+        return "Name: " + name + ", Phone Number: " + phoneNumber + ", ID: " + id;
     }
 
 }
