@@ -11,7 +11,7 @@ public class DriverList implements IDriverList {
 
     public boolean add(IDriver driver) {
 
-        // Check if the driver does not exist in the list first, or if its null.
+        // Check if driver already exists in the list first, or if its null.
         if (driver == null || findById(driver.getId()) != null)
             return false;
 
@@ -78,5 +78,145 @@ public class DriverList implements IDriverList {
 
         return resultList;
     }
+
+    public IDriver findByVehiclePlate(String vehiclePlate) {
+        IDriver result = null;
+        Node<IDriver> current = head;
+
+        while (current != null) {
+            if (current.getData().getVehiclePlate().equals(vehiclePlate))
+                result = current.getData();
+
+            current = current.getNext();
+        }
+
+        return result;
+    }
+
+    public LinkedList<IDriver> findByVehicleType(VehicleType vehicleType) {
+        LinkedList<IDriver> resultList = new LinkedList<IDriver>();
+        Node<IDriver> current = head;
+
+        while (current != null) {
+            if (current.getData().getVehicleType() == vehicleType)
+                resultList.insertAtBack(current.getData());
+
+            current = current.getNext();
+        }
+
+        return resultList;
+    }
+
+    public LinkedList<IDriver> getAll() {
+        LinkedList<IDriver> resultList = new LinkedList<IDriver>();
+        Node<IDriver> current = head;
+
+        while (current != null) {
+            resultList.insertAtBack(current.getData());
+            current = current.getNext();
+        }
+
+        return resultList;
+    }
+
+    public boolean removeById(int driverId) {
+        if (findById(driverId) == null)
+            return false;
+
+        Node<IDriver> current = head;
+        Node<IDriver> previous = null;
+        
+        // Check if the element to remove is at head (edge case).
+        if (head.getData().getId() == driverId) {
+            head = head.getNext();
+            if (head == null)
+                tail = null;
+            size--;
+            return true;
+        }
+
+        while (current.getNext() != null) {
+            if (current.getData().getId() == driverId) {
+                previous.setNext(current.getNext());
+                size--;
+                return true;
+            }
+
+            previous = current;
+            current = current.getNext();
+        }
+
+        // Element to be removed is 100% the last element at this point
+        previous.setNext(current.getNext());
+        tail = previous;
+        size--;
+        return true;
+
+    }
+
+    public boolean removeByVehiclePlate(String vehiclePlate) {
+        if (findByVehiclePlate(vehiclePlate) == null)
+            return false;
+
+        Node<IDriver> current = head;
+        Node<IDriver> previous = null;
+        
+        // Check if the element to remove is at head (edge case).
+        if (head.getData().getVehiclePlate().equals(vehiclePlate)) {
+            head = head.getNext();
+            if (head == null)
+                tail = null;
+            size--;
+            return true;
+        }
+
+        while (current.getNext() != null) {
+            if (current.getData().getVehiclePlate().equals(vehiclePlate)) {
+                previous.setNext(current.getNext());
+                size--;
+                return true;
+            }
+
+            previous = current;
+            current = current.getNext();
+        }
+
+        // Element to be removed is 100% the last element at this point
+        previous.setNext(current.getNext());
+        tail = previous;
+        size--;
+        return true;
+
+    }
+
+    public int removeByName(String fullName) {
+        int count = 0;
+    
+        if (head == null)
+            return count;
+
+        Node<IDriver> current = head.getNext();
+        Node<IDriver> previous = head;
+
+        if (head.getData().getName().equals(fullName)) {
+            head = head.getNext();
+            if (head == null)
+                tail = null;
+            count++;
+        }
+
+        while (current != null) {
+            // Call removeByID method? Method would be O(n^2)...
+
+        }
+
+        
+
+
+    }
+
+
+
+
 
 }
