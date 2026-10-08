@@ -189,34 +189,44 @@ public class DriverList implements IDriverList {
 
     }
 
+    // Simpler implementation by using the existing removeById method, but has a worst-case time complexity of O(n²) as a compromise.
     public int removeByName(String fullName) {
         int count = 0;
-    
-        if (head == null)
-            return count;
-
-        Node<IDriver> current = head.getNext();
-        Node<IDriver> previous = head;
-
-        if (head.getData().getName().equals(fullName)) {
-            head = head.getNext();
-            if (head == null)
-                tail = null;
-            count++;
-        }
+        Node<IDriver> current = head;
 
         while (current != null) {
-            // Call removeByID method? Method would be O(n^2)...
+            if (current.getData().getName().equals(fullName)) {      
+                removeById(current.getData().getId());
+                count++;
+            }
 
+            current = current.getNext();
+    
         }
 
-        
-
-
+        return count;
     }
 
+    public int removeByVehicleType(VehicleType vehicleType) {
+        int count = 0;
+        Node<IDriver> current = head;
 
+        while (current != null) {
+            if (current.getData().getVehicleType() == vehicleType) {      
+                removeById(current.getData().getId());
+                count++;
+            }
 
+            current = current.getNext();
+    
+        }
 
+        return count;
+    }
 
+    public int size() {
+        return size;
+    }
+
+    
 }
