@@ -41,7 +41,7 @@ public class RideSharingSystem implements IRideSharingSystem {
             }
 
         } catch (IOException e) {
-            System.out.println(e.getMessage())
+            System.out.println(e.getMessage());
             return false;
 
         } finally {
@@ -49,7 +49,7 @@ public class RideSharingSystem implements IRideSharingSystem {
             try {
                 bufferedReader.close();
             } catch (Exception e) {
-                System.out.println(e.getMessage())
+                System.out.println(e.getMessage());
                 return false;
             }
             
@@ -59,7 +59,55 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
 	public boolean loadRidesFromCSV(String ridesFilePath) {
+        BufferedReader bufferedReader = null;
+        String lineRead = "";
+        int rideId = 1;
 
+        try {
+            FileReader fileReader = new FileReader(ridesFilePath);
+            bufferedReader = new BufferedReader(fileReader);
+
+            while ((lineRead = bufferedReader.readLine()) != null) {
+                String[] row = lineRead.split(",");
+                String rideType = row[0];
+                String pickupLocation = row[1];
+                String pickupTimeString = row[2];
+                int[] pickupTimeArray = dateTimeRetrieve(pickupTimeString);
+                IDateTime pickupTime = new DateTime(pickupTimeArray[2], pickupTimeArray[0], pickupTimeArray[1], pickupTimeArray[3], pickupTimeArray[4]);
+                String dropoffTimeString = row[3];
+                int[] dropoffTimeArray = dateTimeRetrieve(dropoffTimeString);
+                IDateTime dropoffTime = new DateTime(dropoffTimeArray[2], dropoffTimeArray[0], dropoffTimeArray[1], dropoffTimeArray[3], dropoffTimeArray[4]);
+                String dropoffLocation = row[4];
+                int driverId = Integer.parseInt(row[5]);
+                if (rideType.equals("PRIVATE")) {
+                    int riderId = Integer.parseInt(row[6]);
+                    IDriver driver = driverList.findById(driverId);
+                    IRider rider = riderList.findById(riderId);
+                    IRide r = new PrivateRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
+                    rideList.addRide(r);
+                    rideId++;
+                // TODO: Implement SharedRide Class
+                // } else {
+
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return false;
+
+        } finally {
+            
+            try {
+                bufferedReader.close();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
+            
+        }
+        
+        return true;
     }
 
     public boolean addRider(IRider rider) {
@@ -138,6 +186,19 @@ public class RideSharingSystem implements IRideSharingSystem {
 
     }
 
-
+    // Retrieves all DateTime parameters from DateTime column into an int array
+    public int[] dateTimeRetrieve(String dateTime) {
+        // Format is MM/DD/YYYY HH:MM
+        int[] proccessedDateTime = new int[5];
+        String[] date = dateTime.split("/");
+        proccessedDateTime[0] = Integer.parseInt(date[0]);
+        proccessedDateTime[1] = Integer.parseInt(date[1]);
+        String[] yearTime = date[2].split(" ");
+        proccessedDateTime[2] = Integer.parseInt(yearTime[0]);
+        String[] time = yearTime[1].split(":");
+        proccessedDateTime[3] = Integer.parseInt(time[0]);
+        proccessedDateTime[4] = Integer.parseInt(time[1]);
+        return proccessedDateTime;
+    }
 
 }
