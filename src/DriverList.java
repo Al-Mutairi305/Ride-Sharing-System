@@ -11,8 +11,8 @@ public class DriverList implements IDriverList {
 
     public boolean add(IDriver driver) {
 
-        // Check if driver already exists in the list first, or if its null.
-        if (driver == null || findById(driver.getId()) != null)
+        // Check if a driver with the same ID or vehicle plate exists in the list first, or if the parameter is null.
+        if (driver == null || findById(driver.getId()) != null || findByVehiclePlate(driver.getVehiclePlate()) != null)
             return false;
 
         Node<IDriver> newNode = new Node<IDriver>(driver);

@@ -4,10 +4,11 @@ public abstract class Person implements IPerson {
     protected String phoneNumber;
     protected int id;
 
-    public Person(String name, String phoneNumber, int id) {
+    public Person(int id, String name, String phoneNumber) {
+        this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.id = id;
+        
     }
 
     public int getId() {
@@ -42,7 +43,7 @@ public abstract class Person implements IPerson {
 
     
     public String toString() {
-        return "Name: " + name + ", Phone Number: " + phoneNumber + ", ID: " + id;
+        return "ID: " + id + ", Name: " + name + ", Phone Number: " + phoneNumber;
     }
 
 }
