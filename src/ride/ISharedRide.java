@@ -1,3 +1,5 @@
+package ride;
+
 import rider.IRider;
 import system.LinkedList;
 
