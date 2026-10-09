@@ -17,4 +17,10 @@ public class PrivateRide extends Ride implements IPrivateRide{
 	public void setRider(IRider rider) {
 		this.rider = rider;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("Ride Type: %s, Ride ID: %s, Rider: %s, Driver: %s, Pickup Location: %s, Dropoff Location: %s, Pickup Time: %s, Dropoff Time: %s"
+		, "Private", rideID, rider.getName(), driver.getName(), pickupLocation, dropoffLocation, pickupTime.format(), dropoffTime.format());
+	}
 }

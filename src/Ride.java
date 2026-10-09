@@ -67,12 +67,19 @@ public abstract class Ride implements IRide {
 	// Returns a formatted string describing the ride.
 	@Override
 	public String toString() {
-		return "";
+		return String.format("Ride ID: %s, Driver: %s, Pickup Location: %s, Dropoff Location: %s, Pickup Time: %s, Dropoff Time: %s"
+				, rideID, driver.getName(), pickupLocation, dropoffLocation, pickupTime.format(), dropoffTime.format());
 	}
 
 	// Compares rides alphabetically by pickup location.
 	@Override
 	public int compareTo(IRide other) {
-		return 0;
+		if (pickupLocation.compareToIgnoreCase(other.getPickupLocation()) < 0) {
+			return -1;
+		} else if (pickupLocation.compareToIgnoreCase(other.getPickupLocation()) > 0) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 }
