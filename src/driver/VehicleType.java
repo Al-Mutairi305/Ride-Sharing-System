@@ -1,3 +1,4 @@
+package driver;
 /**
  * The set of vehicle types a driver's vehicle may be. Used by IDriver in
  * place of a free-text vehicle type string, so vehicle types are validated

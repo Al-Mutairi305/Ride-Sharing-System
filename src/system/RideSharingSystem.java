@@ -1,9 +1,20 @@
+package system;
 /* Each team memmber must implement the RideSharingSystem class's methods that correspond to their designated list class as follows:
 Khaled --> DriverList 
 Omar --> RiderList
 Abdulelah --> RideList
 */
 import java.io.*;
+
+import driver.Driver;
+import driver.IDriver;
+import driver.IDriverList;
+import driver.VehicleType;
+import ride.IDateTime;
+import ride.IRide;
+import ride.IRideList;
+import rider.IRider;
+import rider.IRiderList;
 
 public class RideSharingSystem implements IRideSharingSystem {
 

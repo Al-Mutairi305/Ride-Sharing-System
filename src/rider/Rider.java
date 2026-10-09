@@ -1,3 +1,8 @@
+package rider;
+import ride.IRide;
+import system.LinkedList;
+import system.Person;
+
 public class Rider extends Person implements IRider {
 
     private String email;

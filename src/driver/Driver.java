@@ -1,3 +1,9 @@
+package driver;
+
+import ride.IRide;
+import system.LinkedList;
+import system.Person;
+
 public class Driver extends Person implements IDriver {
 
     private String vehiclePlate;

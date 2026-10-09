@@ -1,3 +1,7 @@
+package driver;
+
+import system.IPerson;
+
 /**
  * Represents a single driver in the ride-sharing system.
  * Drivers are compared by ID.

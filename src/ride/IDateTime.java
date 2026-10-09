@@ -1,3 +1,4 @@
+package ride;
 /**
  * Minimal date/time abstraction used by private rides and shared rides.
  * Implementations must define chronological ordering via compareTo.

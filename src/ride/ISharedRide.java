@@ -1,3 +1,6 @@
+import rider.IRider;
+import system.LinkedList;
+
 /**
 	* Represents a shared ride (carpool) involving multiple riders.
 */

@@ -1,3 +1,6 @@
+import rider.IRider;
+
+package ride;
 /**
 	* Represents a private ride involving exactly one rider.
 */

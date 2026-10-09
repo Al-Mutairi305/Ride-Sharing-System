@@ -1,3 +1,6 @@
+package ride;
+import system.LinkedList;
+
 /**
  * Stores all rides in a structure maintained in alphabetical order by pickup location.
  */

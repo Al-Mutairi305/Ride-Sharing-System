@@ -1,3 +1,7 @@
+package ride;
+import system.LinkedList;
+import system.Node;
+
 class RideList implements IRideList {
 
 	private LinkedList<IRide> list;

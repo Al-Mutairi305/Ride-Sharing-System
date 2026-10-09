@@ -1,3 +1,4 @@
+package ride;
 public abstract class Ride implements IRide {
 	
 	protected int rideID;
