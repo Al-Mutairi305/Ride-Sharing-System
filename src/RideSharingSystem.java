@@ -73,10 +73,10 @@ public class RideSharingSystem implements IRideSharingSystem {
                 String pickupLocation = row[1];
                 String pickupTimeString = row[2];
                 int[] pickupTimeArray = dateTimeRetrieve(pickupTimeString);
-                IDateTime pickupTime = new DateTime(pickupTimeArray[2], pickupTimeArray[0], pickupTimeArray[1], pickupTimeArray[3], pickupTimeArray[4]);
+                IDateTime pickupTime = new DateTime(pickupTimeArray[0], pickupTimeArray[1], pickupTimeArray[2], pickupTimeArray[3], pickupTimeArray[4]);
                 String dropoffTimeString = row[3];
                 int[] dropoffTimeArray = dateTimeRetrieve(dropoffTimeString);
-                IDateTime dropoffTime = new DateTime(dropoffTimeArray[2], dropoffTimeArray[0], dropoffTimeArray[1], dropoffTimeArray[3], dropoffTimeArray[4]);
+                IDateTime dropoffTime = new DateTime(dropoffTimeArray[0], dropoffTimeArray[1], dropoffTimeArray[2], dropoffTimeArray[3], dropoffTimeArray[4]);
                 String dropoffLocation = row[4];
                 int driverId = Integer.parseInt(row[5]);
                 IDriver driver = driverList.findById(driverId);
@@ -202,18 +202,26 @@ public class RideSharingSystem implements IRideSharingSystem {
         return rideList.getAllAlphabetically();
     }
 
-    // Retrieves all DateTime parameters from DateTime column into an int array
+    // Takes string which contains all date time data ("MM/DD/YYYY HH:MM") in CSV file and puts each part into an integer array
     public int[] dateTimeRetrieve(String dateTime) {
-        // Format is MM/DD/YYYY HH:MM
         int[] proccessedDateTime = new int[5];
+        // Splits string into ("MM", "DD", "YYYY HH:MM")
         String[] date = dateTime.split("/");
-        proccessedDateTime[0] = Integer.parseInt(date[0]);
-        proccessedDateTime[1] = Integer.parseInt(date[1]);
+        // DateTime contructor takes (YYYY, MM, DD, HH, MM) so Month is index 1
+        proccessedDateTime[1] = Integer.parseInt(date[0]);
+        // Day is the third parameter so index 2
+        proccessedDateTime[2] = Integer.parseInt(date[1]);
+        // Splits the ("YYYY HH:MM") string into ("YYYY", "HH:MM")
         String[] yearTime = date[2].split(" ");
-        proccessedDateTime[2] = Integer.parseInt(yearTime[0]);
+        // Year is the first parameter so index 0
+        proccessedDateTime[0] = Integer.parseInt(yearTime[0]);
+        // Splits the ("HH:MM") string into ("HH", "MM")
         String[] time = yearTime[1].split(":");
+        // Hours
         proccessedDateTime[3] = Integer.parseInt(time[0]);
+        // Minutes
         proccessedDateTime[4] = Integer.parseInt(time[1]);
+        // Returns array containing (YYYY, MM, DD, HH, MM) as integers to easily make a DateTime object
         return proccessedDateTime;
     }
 
