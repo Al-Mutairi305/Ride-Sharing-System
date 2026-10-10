@@ -17,8 +17,8 @@ public class RideSharingSystem implements IRideSharingSystem {
         this.rideList = rideList;
     }
 
-    public boolean loadRidersFromCSV(String ridersFilePath) {     
-
+    public boolean loadRidersFromCSV(String ridersFilePath) {   
+    
     }
 
     public boolean loadDriversFromCSV(String driversFilePath) {
@@ -36,8 +36,8 @@ public class RideSharingSystem implements IRideSharingSystem {
                 String phoneNumber = row[2];
                 String vehiclePlate = row[3];
                 VehicleType vehicleType = VehicleType.valueOf(row[4]);
-                IDriver d = new Driver(id, name, phoneNumber, vehiclePlate, vehicleType);
-                driverList.add(d);
+                IDriver driver = new Driver(id, name, phoneNumber, vehiclePlate, vehicleType);
+                driverList.add(driver);
             }
 
         } catch (IOException e) {
@@ -79,17 +79,33 @@ public class RideSharingSystem implements IRideSharingSystem {
                 IDateTime dropoffTime = new DateTime(dropoffTimeArray[2], dropoffTimeArray[0], dropoffTimeArray[1], dropoffTimeArray[3], dropoffTimeArray[4]);
                 String dropoffLocation = row[4];
                 int driverId = Integer.parseInt(row[5]);
+                IDriver driver = driverList.findById(driverId);
                 if (rideType.equals("PRIVATE")) {
                     int riderId = Integer.parseInt(row[6]);
-                    IDriver driver = driverList.findById(driverId);
                     IRider rider = riderList.findById(riderId);
-                    IRide r = new PrivateRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
-                    rideList.addRide(r);
-                    rideId++;
-                // TODO: Implement SharedRide Class
-                // } else {
+                    IRide ride = new PrivateRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
+                    rideList.addRide(ride);
+            
+                } else {
+                    String[] riders = row[6].split(";");           // Split the 6th column which contains the riders' ids, each separated by ";", and store them in an array.
+                    IRiderList riderList = new RiderList();
+                    try {
+                        int i = 0;
+                        while (true) {                                    
+                            int riderId = Integer.parseInt(riders[i]);
+                            IRider rider = this.riderList.findById(riderId);     // This line will not cause NullPointerException if all riders from the "riders_100.csv" file have been loaded beforehand.
+                            riderList.add(rider);
+                            i++;
+                        }
 
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        // Finish reading all of the riders. Automatically breaks from the loop.
+                    }
+
+                    IRide ride = new SharedRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, riderList);
+                    rideList.addRide(ride);
                 }
+                rideId++;
             }
 
         } catch (IOException e) {
@@ -135,7 +151,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public LinkedList<IRider> getAllRiders() {
-
+        return riderList.getAll();
     }
 
     public IDriver searchDriverById(int driverId) {
@@ -183,7 +199,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public LinkedList<IRide> getAllRidesAlphabetically() {  
-
+        return rideList.getAllAlphabetically();
     }
 
     // Retrieves all DateTime parameters from DateTime column into an int array
