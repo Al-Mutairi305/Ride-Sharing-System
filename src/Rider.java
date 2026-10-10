@@ -3,8 +3,8 @@ public class Rider extends Person implements IRider {
     private String email;
     private String homeCity;
 
-    public Rider(String name, String phoneNumber, int id, String email, String homeCity) {
-        super(name, phoneNumber, id);
+    public Rider(int id, String name, String phoneNumber, String email, String homeCity) {
+        super(id, name, phoneNumber);
         this.email = email;
         this.homeCity = homeCity;
     }
