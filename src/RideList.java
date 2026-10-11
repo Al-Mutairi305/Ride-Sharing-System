@@ -99,13 +99,29 @@ class RideList implements IRideList {
 	public LinkedList<IRide> findByRiderName(String riderFullName) {
 		LinkedList<IRide> matchingList = new LinkedList<IRide>();
 		Node<IRide> current = head;
-		while (current.getNext() != null) {
+		while (current != null) {
+
 			if (current.getData() instanceof PrivateRide) {
+
 				if (((PrivateRide) current.getData()).getRider().getName().equals(riderFullName)) {
 					matchingList.insertAtBack(current.getData());
 				}
-			// TODO: Implement SharedRide Class
-			// } else if (current.getData() instanceof SharedRide) {
+			
+			} else if (current.getData() instanceof SharedRide) {
+
+				LinkedList<IRider> participants = ((SharedRide)current.getData()).getParticipants();
+				Node<IRider> currentRiderNode = participants.getHead();
+				while (currentRiderNode != null)  {
+
+					if (currentRiderNode.getData().getName().equals(riderFullName)) {
+						matchingList.insertAtBack(current.getData());
+						break;                                            // break from inner loop to prevent adding the same ride twice in the case of matching riders.
+					}
+					
+					currentRiderNode = currentRiderNode.getNext();
+					
+				}
+				
 			}
 			current = current.getNext();
 		}

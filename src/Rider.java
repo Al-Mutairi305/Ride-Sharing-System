@@ -3,7 +3,7 @@ public class Rider extends Person implements IRider {
     private String email;
     private String homeCity;
 
-    public Rider(int id, String name, String phoneNumber, String email, String homeCity) {
+    public Rider(int id, String name, String phoneNumber, String email, String homeCity) throws IllegalArgumentException {
         super(id, name, phoneNumber);
         this.email = email;
         this.homeCity = homeCity;

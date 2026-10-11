@@ -78,6 +78,11 @@ public class LinkedList<T> {
 
     public void print() {
 
+        if (size == 0) {
+            System.out.println("No results");
+            return;
+        }
+        
         Node<T> current = head;
 
         for (int i = 1; i <= size; i++) {

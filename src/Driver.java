@@ -3,10 +3,10 @@ public class Driver extends Person implements IDriver {
     private String vehiclePlate;
     private VehicleType vehicleType;
 
-    public Driver(int id, String name, String phoneNumber, String vehiclePlate, VehicleType vehicleType) {
+    public Driver(int id, String name, String phoneNumber, String vehiclePlate, VehicleType vehicleType) throws IllegalArgumentException {
         super(id, name, phoneNumber);
         this.vehiclePlate = vehiclePlate;
-        this.vehicleType = vehicleType;
+        setVehiclePlate(vehiclePlate);
     }
 
     public String getVehiclePlate() {

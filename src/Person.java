@@ -2,12 +2,12 @@ public abstract class Person implements IPerson {
 
     protected String name;
     protected String phoneNumber;
-    protected int id;
+    protected final int id;
 
-    public Person(int id, String name, String phoneNumber) {
+    public Person(int id, String name, String phoneNumber) throws IllegalArgumentException {
         this.id = id;
         this.name = name;
-        this.phoneNumber = phoneNumber;
+        setPhoneNumber(phoneNumber);
         
     }
 
