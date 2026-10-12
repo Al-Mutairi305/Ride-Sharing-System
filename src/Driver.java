@@ -52,11 +52,6 @@ public class Driver extends Person implements IDriver {
             return 0;
     }
 
-    public LinkedList<IRide> getRideHistory() { // Find list of rides and check the ones the driver is assigned to them.
-                                                // RideSharingSystem object?
-
-    }
-
     public String toString() {
         return super.toString() + ", Vehicle plate: " + vehiclePlate + ", Vehicle type: " + vehicleType;
     }

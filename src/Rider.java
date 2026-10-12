@@ -34,10 +34,6 @@ public class Rider extends Person implements IRider {
             return 0;
     }
 
-    public LinkedList<IRide> getRideHistory() {
-        return null;
-    }
-
     // ToString override required.
 
 
