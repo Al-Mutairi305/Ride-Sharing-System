@@ -11,10 +11,10 @@ public class RideSharingSystem implements IRideSharingSystem {
     private IDriverList driverList;
     private IRideList rideList;
 
-    public RideSharingSystem(IRiderList riderList, IDriverList driverList, IRideList rideList) {
-        this.riderList = riderList;
-        this.driverList = driverList;
-        this.rideList = rideList;
+    public RideSharingSystem() {
+        riderList = new RiderList();
+        driverList = new DriverList();
+        rideList = new RideList();
     }
 
     public boolean loadRidersFromCSV(String ridersFilePath) {   
@@ -117,21 +117,21 @@ public class RideSharingSystem implements IRideSharingSystem {
                 if (rideType.equals("PRIVATE")) {
                     int riderId = Integer.parseInt(row[6]);
                     IRider rider = riderList.findById(riderId);
-                    IRide ride = new PrivateRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
-                    if (!hasConflict(ride)) {
-                        rideList.addRide(ride);
+                    IRide privateRide = new PrivateRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
+                    if (!hasConflict(privateRide)) {
+                        rideList.addRide(privateRide);
                     }
                     
             
                 } else {
                     String[] riders = row[6].split(";");           // Split the 7th column which contains the riders' ids, each separated by ";", then store them in an array. 
-                    IRiderList riderList = new RiderList();
+                    IRide sharedRide = new SharedRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime);
                     try {
                         int i = 0;
                         while (true) {                                    
                             int riderId = Integer.parseInt(riders[i]);
                             IRider rider = this.riderList.findById(riderId);     // This line will not throw NullPointerException if all riders from the "riders_100.csv" file have been loaded beforehand.
-                            riderList.add(rider);
+                            ((SharedRide)sharedRide).addParticipant(rider);
                             i++;
                         }
 
@@ -139,9 +139,8 @@ public class RideSharingSystem implements IRideSharingSystem {
                         // Finish reading all of the riders. Automatically breaks from the loop.
                     }
 
-                    IRide ride = new SharedRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, riderList);
-                    if (!hasConflict(ride)) {
-                        rideList.addRide(ride);
+                    if (!hasConflict(sharedRide)) {
+                        rideList.addRide(sharedRide);
                     }
                 }
                 rideId++;

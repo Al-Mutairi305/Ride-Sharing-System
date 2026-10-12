@@ -3,9 +3,9 @@ public class SharedRide extends Ride implements ISharedRide {
     private IRiderList participants;
 
     public SharedRide(int rideID, String pickupLocation, String dropoffLocation, IDriver driver, IDateTime pickupTime,
-            IDateTime dropoffTime, IRiderList participants) {
+            IDateTime dropoffTime) {
         super(rideID, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime);
-        this.participants = participants;
+        participants = new RiderList();
     }
 
     public boolean hasRider(int riderId) {
