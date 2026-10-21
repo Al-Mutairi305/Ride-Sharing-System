@@ -86,7 +86,9 @@ public class LinkedList<T> {
         Node<T> current = head;
 
         for (int i = 1; i <= size; i++) {
-            System.out.println(i + ": " + current.getData());
+            System.out.println("#"+ i + "\n" + current.getData());
+            if (i != size) 
+                System.out.println("--------------------------------");  // 32 hyphens
             current = current.getNext();
         }
     }

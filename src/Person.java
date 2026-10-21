@@ -44,7 +44,7 @@ public abstract class Person implements IPerson {
 
     
     public String toString() {
-        return "ID: " + id + ", Name: " + name + ", Phone Number: " + phoneNumber;
+        return "ID: " + id + "\nName: " + name + "\nPhone Number: " + phoneNumber;
     }
 
     public LinkedList<IRide> getRideHistory() {

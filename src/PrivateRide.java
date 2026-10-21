@@ -20,7 +20,8 @@ public class PrivateRide extends Ride implements IPrivateRide{
 
 	@Override
 	public String toString() {
-		return String.format("Ride Type: %s, Ride ID: %s, Rider: %s, Driver: %s, Pickup Location: %s, Dropoff Location: %s, Pickup Time: %s, Dropoff Time: %s"
-		, "Private", rideID, rider.getName(), driver.getName(), pickupLocation, dropoffLocation, pickupTime.format(), dropoffTime.format());
+		return "Ride Type: Private" + "\nRide ID: " + rideID + "\nDriver: " + driver.getName()
+                + "\nPickup Location: " + pickupLocation + "\nDropoff Location: " + dropoffLocation
+        + "\nPickup Time: " + pickupTime.format() + "\nDropoff Time: " + dropoffTime.format()+ "\nRider: "+rider.getName();
 	}
 }

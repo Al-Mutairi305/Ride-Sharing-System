@@ -29,11 +29,11 @@ public class SharedRide extends Ride implements ISharedRide {
     }
 
     public String toString() {
-        String sharedRide = "Ride Type: Shared" + ", Ride ID: " + rideID + ", Driver: " + driver.getName()
-                + ", Pickup Location: " + pickupLocation + ", Dropoff Location: " + dropoffLocation;
-        sharedRide += ", Pickup Time: " + pickupTime.format() + ", Dropoff Time: " + dropoffTime.format();
+        String sharedRide = "Ride Type: Shared" + "\nRide ID: " + rideID + "\nDriver: " + driver.getName()
+                + "\nPickup Location: " + pickupLocation + "\nDropoff Location: " + dropoffLocation;
+        sharedRide += "\nPickup Time: " + pickupTime.format() + "\nDropoff Time: " + dropoffTime.format();
 
-        sharedRide += ", Rider(s): ";
+        sharedRide += "\nRider(s): ";
         if (participants.size() == 0) {
             sharedRide += "None";
             return sharedRide;

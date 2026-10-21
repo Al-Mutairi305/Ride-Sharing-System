@@ -53,7 +53,7 @@ public class Driver extends Person implements IDriver {
     }
 
     public String toString() {
-        return super.toString() + ", Vehicle plate: " + vehiclePlate + ", Vehicle type: " + vehicleType;
+        return super.toString() + "\nVehicle plate: " + vehiclePlate + "\nVehicle type: " + vehicleType;
     }
 
 }

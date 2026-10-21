@@ -34,7 +34,9 @@ public class Rider extends Person implements IRider {
             return 0;
     }
 
-    // ToString override required.
+    public String toString() {
+        return super.toString()+ "\nEmail: "+email + "\nHome City: "+homeCity;
+    }
 
 
 }
