@@ -5,8 +5,8 @@ public class Driver extends Person implements IDriver {
 
     public Driver(int id, String name, String phoneNumber, String vehiclePlate, VehicleType vehicleType) throws IllegalArgumentException {
         super(id, name, phoneNumber);
-        this.vehiclePlate = vehiclePlate;
         setVehiclePlate(vehiclePlate);
+        this.vehicleType = vehicleType;
     }
 
     public String getVehiclePlate() {

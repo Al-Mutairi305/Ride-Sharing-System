@@ -71,7 +71,7 @@ public class RideSharingSystem implements IRideSharingSystem {
                 String vehiclePlate = row[3];
                 VehicleType vehicleType = VehicleType.valueOf(row[4]);
                 IDriver driver = new Driver(id, name, phoneNumber, vehiclePlate, vehicleType);
-                driverList.add(driver);
+                addDriver(driver);
             }
 
         } catch (IOException e) {
@@ -114,11 +114,15 @@ public class RideSharingSystem implements IRideSharingSystem {
                 String dropoffLocation = row[4];
                 int driverId = Integer.parseInt(row[5]);
                 IDriver driver = driverList.findById(driverId);
+                
                 if (rideType.equals("PRIVATE")) {
                     int riderId = Integer.parseInt(row[6]);
                     IRider rider = riderList.findById(riderId);
                     IRide privateRide = new PrivateRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
+                    
                     if (!hasConflict(privateRide)) {
+                        ((Person)driver).addToRideHistory(privateRide);
+                        ((Person)rider).addToRideHistory(privateRide);
                         rideList.addRide(privateRide);
                     }
                     
@@ -139,7 +143,17 @@ public class RideSharingSystem implements IRideSharingSystem {
                         // Finish reading all of the riders. Automatically breaks from the loop.
                     }
 
-                    if (!hasConflict(sharedRide)) {
+                    if (!hasConflict(sharedRide)) {   // If the ride does not have any conflicts,  and add it to the rideHistory of each person associated with it then add it to list.
+                        ((Person)driver).addToRideHistory(sharedRide);  // Method is not visible if reference is IDriver. No risk of a ClassCastException here because every Driver instantiated is a Person.
+
+                        LinkedList<IRider> ridersList = ((SharedRide)sharedRide).getParticipants();
+                        Node<IRider> currentRiderNode = ridersList.getHead();
+                        while (currentRiderNode != null) {
+                            IRider rider = currentRiderNode.getData();
+                            ((Person)rider).addToRideHistory(sharedRide);
+                            currentRiderNode = currentRiderNode.getNext();
+                        }
+
                         rideList.addRide(sharedRide);
                     }
                 }
@@ -181,7 +195,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public IRider searchRiderById(int riderId) {
-
+        return riderList.findById(riderId);
     }
 
     public IRider searchRiderByEmail(String email) {
@@ -189,7 +203,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public LinkedList<IRider> searchRidersByName(String fullName) {
-
+        return riderList.findByName(fullName);
     }
 
     public LinkedList<IRider> searchRidersByHomeCity(String homeCity) {
@@ -221,6 +235,23 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public boolean removeDriver(int driverId) {
+        IDriver driver = searchDriverById(driverId);
+        if (driver == null)
+            return false;
+        
+        LinkedList<IRide> rideList = driver.getRideHistory();          // Get all rides associated with this driver.
+        Node<IRide> currentRideNode = rideList.getHead();
+
+        while (currentRideNode != null) {       // Traverse the rides and remove them from RideSharingSystem's rideList.
+            IRide ride = currentRideNode.getData();
+            this.rideList.removeRideById(ride.getRideId());
+
+            currentRideNode = currentRideNode.getNext();
+
+        }
+
+        driverList.removeById(driverId);        // Finally, remove the driver from RideSharingSystem's driverList.
+        return true;
 
     }
 
@@ -233,7 +264,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public LinkedList<IRide> searchRidesByPickupLocation(String pickupLocation) {  
-
+        return rideList.findByPickupLocation(pickupLocation);
     }
 
     public LinkedList<IRide> searchRidesByRiderName(String riderName) {   
@@ -313,6 +344,22 @@ public class RideSharingSystem implements IRideSharingSystem {
         return false;
          
          
+    }
+
+    // Temporary method for testing purposes.
+    public LinkedList<IRide> test(int driverId) {
+        LinkedList<IRide> l1 = rideList.getAllAlphabetically();
+        LinkedList<IRide> l2 = new LinkedList<IRide>();
+        Node<IRide> current = l1.getHead();
+
+        while (current != null) {
+            if (current.getData().getDriver().getId() == driverId)
+                l2.insertAtBack(current.getData());
+            
+            current = current.getNext();
+        }
+
+        return l2;
     }
 
 }
