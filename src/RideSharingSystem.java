@@ -17,7 +17,7 @@ public class RideSharingSystem implements IRideSharingSystem {
         rideList = new RideList();
     }
 
-    public boolean loadRidersFromCSV(String ridersFilePath) {   
+    public boolean loadRidersFromCSV(String ridersFilePath) throws IllegalArgumentException {   
           BufferedReader bufferedReader = null;
         String lineRead = "";
 
@@ -33,7 +33,7 @@ public class RideSharingSystem implements IRideSharingSystem {
                 String phoneNumber = row[3];
                 String homeCity = row[4];
                 IRider rider = new Rider(id, name, phoneNumber, email, homeCity);
-                riderList.add(rider);
+                addRider(rider);
             }
 
         } catch (IOException e) {
@@ -55,7 +55,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     
     }
 
-    public boolean loadDriversFromCSV(String driversFilePath) {
+    public boolean loadDriversFromCSV(String driversFilePath) throws IllegalArgumentException {
         BufferedReader bufferedReader = null;
         String lineRead = "";
 
@@ -143,8 +143,8 @@ public class RideSharingSystem implements IRideSharingSystem {
                         // Finish reading all of the riders. Automatically breaks from the loop.
                     }
 
-                    if (!hasConflict(sharedRide)) {   // If the ride does not have any conflicts,  and add it to the rideHistory of each person associated with it then add it to list.
-                        ((Person)driver).addToRideHistory(sharedRide);  // Method is not visible if reference is IDriver. No risk of a ClassCastException here because every Driver instantiated is a Person.
+                    if (!hasConflict(sharedRide)) {   // If the ride does not have any conflicts, add it to the rideHistory of each person associated with it, then add it to list.
+                        ((Person)driver).addToRideHistory(sharedRide);  // Method is not visible if reference is IDriver. No risk of ClassCastException being thrown here because every Driver instantiated is a Person.
 
                         LinkedList<IRider> ridersList = ((SharedRide)sharedRide).getParticipants();
                         Node<IRider> currentRiderNode = ridersList.getHead();
@@ -178,11 +178,19 @@ public class RideSharingSystem implements IRideSharingSystem {
         return true;
     }
 
-    public boolean addRider(IRider rider) {
+    public boolean addRider(IRider rider) {  // We will assume that "Invalid" refers to invalid phone number.
+        try {
+            rider.setPhoneNumber(rider.getPhoneNumber());  // Check if phone number is valid.
+
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+
+        return riderList.add(rider);
 
     }
 
-    public boolean addDriver(IDriver driver) {   // We will assume that "Invalid" means invalid phone number or vehicle plate
+    public boolean addDriver(IDriver driver) {   // We will assume that "Invalid" refers to invalid phone number or vehicle plate
         try {                                                      
             driver.setPhoneNumber(driver.getPhoneNumber());    // Check if information are valid inside the try-catch block.
             driver.setVehiclePlate(driver.getVehiclePlate());
@@ -199,7 +207,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public IRider searchRiderByEmail(String email) {
-
+        return riderList.findByEmail(email);
     }
 
     public LinkedList<IRider> searchRidersByName(String fullName) {
@@ -207,7 +215,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public LinkedList<IRider> searchRidersByHomeCity(String homeCity) {
-
+        return riderList.findByHomeCity(homeCity);
     }
 
     public LinkedList<IRider> getAllRiders() {
@@ -231,20 +239,69 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public boolean removeRider(int riderId) {
+        IRider rider = searchRiderById(riderId);
+        if (rider == null)                          // Check if the rider does not exist.
+         return false;
+        
+        LinkedList<IRide> rideHistory = rider.getRideHistory();             // Get all rides associated with the rider to remove them.
+        Node<IRide> currentRideNode = rideHistory.getHead();
+
+        while (currentRideNode != null) {
+            IRide ride = currentRideNode.getData();
+            IDriver driver = currentRideNode.getData().getDriver();
+
+            if (ride instanceof PrivateRide) {                 // Rides associated with the rider can be a mix of private and shared rides.
+                rideList.removeRideById(ride.getRideId());
+                ((Person)driver).removeFromRideHistory(ride.getRideId());
+                ((Person)rider).removeFromRideHistory(ride.getRideId());
+
+            } else {                                          
+                ((SharedRide)ride).removeParticipantById(riderId);
+                ((Person)rider).removeFromRideHistory(ride.getRideId());
+
+                if (((SharedRide)ride).isEmpty()) {
+                    rideList.removeRideById(ride.getRideId());          // Remove the shared ride if it no longer has any participants.
+                    ((Person)driver).removeFromRideHistory(ride.getRideId());  // Remove the shared ride from the driver's ride history.
+                }
+            }
+
+            currentRideNode = currentRideNode.getNext();
+        }
+
+        riderList.removeById(riderId);               // Finally, remove the rider from RideSharingSystem ride history.
+        return true;
 
     }
 
     public boolean removeDriver(int driverId) {
         IDriver driver = searchDriverById(driverId);
-        if (driver == null)
+        if (driver == null)                              // Check if the driver does not exist.
             return false;
         
-        LinkedList<IRide> rideList = driver.getRideHistory();          // Get all rides associated with this driver.
-        Node<IRide> currentRideNode = rideList.getHead();
+        LinkedList<IRide> rideHistory = driver.getRideHistory();          // Get all rides associated with this driver.
+        Node<IRide> currentRideNode = rideHistory.getHead();
 
         while (currentRideNode != null) {       // Traverse the rides and remove them from RideSharingSystem's rideList.
             IRide ride = currentRideNode.getData();
+            ((Person)driver).removeFromRideHistory(ride.getRideId());    // Remove the ride from the driver's ride history
             this.rideList.removeRideById(ride.getRideId());
+
+            if (ride instanceof PrivateRide) {
+                IRider rider = ((PrivateRide)ride).getRider();
+                ((Person)rider).removeFromRideHistory(ride.getRideId());   // Remove the private ride from the rider's ride history.
+
+            } else {
+                LinkedList<IRider> riderList = ((SharedRide)ride).getParticipants();          // Traverse the shared ride's riders list and remove the ride from each rider's ride history.
+                Node<IRider> currentRiderNode = riderList.getHead();
+
+                while (currentRiderNode != null) {
+                    IRider rider = currentRiderNode.getData();
+                    ((Person)rider).removeFromRideHistory(ride.getRideId());
+
+                    currentRiderNode = currentRiderNode.getNext();
+                }
+
+            }
 
             currentRideNode = currentRideNode.getNext();
 
@@ -323,7 +380,7 @@ public class RideSharingSystem implements IRideSharingSystem {
                 LinkedList<IRider> sharedList = ((SharedRide)currentRide).getParticipants();   // Get the shared ride's list of riders.
                 Node<IRider> currentRiderNode = sharedList.getHead();
 
-                while (currentRiderNode != null) {             // Traverse the list of riders and compare each with passed rider.
+                while (currentRiderNode != null) {             // Traverse the list of riders and check if each rider is associated with passed ride or not.
                     int riderId = currentRiderNode.getData().getId();
 
                     if (currentRide.getDriver().getId() == ride.getDriver().getId()
