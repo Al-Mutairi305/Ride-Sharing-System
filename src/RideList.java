@@ -15,7 +15,7 @@ class RideList implements IRideList {
 			return false;
 		}
 		Node<IRide> newNode = new Node<IRide>(ride);
-		if (isEmpty()) {
+		if (size() == 0) {
 			head = tail = newNode;
 			size++;
 			return true;
@@ -46,7 +46,7 @@ class RideList implements IRideList {
 
 	//Removes a ride by its unique ride ID.
 	public boolean removeRideById(int rideId) {
-		if (isEmpty()) {
+		if (size() == 0) {
 			return false;
 		}
 		Node<IRide> current = head;
@@ -133,7 +133,4 @@ class RideList implements IRideList {
 		return size;
 	}
 
-	public boolean isEmpty() {
-		return (head == null);
-	}
 }

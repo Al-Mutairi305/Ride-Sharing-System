@@ -9,7 +9,7 @@ public class RideSharingSystem implements IRideSharingSystem {
 
     private IRiderList riderList;
     private IDriverList driverList;
-    private IRideList rideList;
+    public IRideList rideList;
 
     public RideSharingSystem() {
         riderList = new RiderList();
@@ -95,7 +95,6 @@ public class RideSharingSystem implements IRideSharingSystem {
 	public boolean loadRidesFromCSV(String ridesFilePath) {
         BufferedReader bufferedReader = null;
         String lineRead = "";
-        int rideId = 1;
 
         try {
             FileReader fileReader = new FileReader(ridesFilePath);
@@ -103,6 +102,7 @@ public class RideSharingSystem implements IRideSharingSystem {
 
             while ((lineRead = bufferedReader.readLine()) != null) {
                 String[] row = lineRead.split(",");
+                //int rideId = generateUniqueRideId();                 // No ride id column; rely on a private auxilary method.
                 String rideType = row[0];
                 String pickupLocation = row[1];
                 String pickupTimeString = row[2];
@@ -129,8 +129,13 @@ public class RideSharingSystem implements IRideSharingSystem {
             
                 } else {
                     String[] riders = row[6].split(";");           // Split the 7th column which contains the riders' ids, each separated by ";", then store them in an array. 
-                    IRide sharedRide = new SharedRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime);
-                    try {
+                    int[] riderIds = new int[riders.length];
+
+                    for (int i = 0; i < riderIds.length; i++) 
+                        riderIds[i] = Integer.parseInt(riders[i]);
+
+                    scheduleSharedRide(pickupLocation, pickupTime, dropoffTime, dropoffLocation, riderIds, driverId);
+                    /*try {
                         int i = 0;
                         while (true) {                                    
                             int riderId = Integer.parseInt(riders[i]);
@@ -155,10 +160,10 @@ public class RideSharingSystem implements IRideSharingSystem {
                         }
 
                         rideList.addRide(sharedRide);
-                    }
-                }
-                rideId++;
-            }
+                    } */
+                } 
+                
+            } 
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -317,7 +322,28 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public boolean scheduleSharedRide(String pickupLocation, IDateTime pickupTime, IDateTime dropoffTime, String dropoffLocation, int[] riderIds, int driverId) {
+        IDriver driver = searchDriverById(driverId);
+        if (driver == null)
+            return false;
+        int rideId = generateUniqueRideId();
+        IRide sharedRide = new SharedRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime);
 
+        for (int i = 0; i < riderIds.length; i++) {
+                if (riderIds[i] == 0)                         // No rider can have an ID of 0. Therefore, riderIds[i] == 0 indicates that the array has been exhausted. 
+                    break;
+
+                int riderId = riderIds[i];
+                IRider rider = searchRiderById(riderId);
+                if (rider == null)
+                    return false;
+                ((SharedRide)sharedRide).addParticipant(rider);
+        }
+
+        if (hasConflict(sharedRide))
+            return false;
+
+        rideList.addRide(sharedRide);
+        return true;
     }
 
     public LinkedList<IRide> searchRidesByPickupLocation(String pickupLocation) {  
@@ -417,6 +443,28 @@ public class RideSharingSystem implements IRideSharingSystem {
         }
 
         return l2;
+    }
+
+    // Method that generates a unique ride id for every ride scheduled. No risk of duplicate ids since there is 1 generation per insertion.
+    private int generateUniqueRideId() {
+        if (this.rideList.size() == 0)
+            return 1;
+
+        LinkedList<IRide> rideList = this.rideList.getAllAlphabetically();
+        int maxId = rideList.getHead().getData().getRideId();
+        Node<IRide> currentRideNode = rideList.getHead().getNext();
+
+        while (currentRideNode != null) {          // Traverse the current ride list to find the maximum ID.
+            IRide ride = currentRideNode.getData();
+
+            if (maxId < ride.getRideId())
+                maxId = ride.getRideId();
+
+            currentRideNode = currentRideNode.getNext();
+        }
+
+        return maxId+1; 
+
     }
 
 }
