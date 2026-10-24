@@ -102,7 +102,7 @@ public class RideSharingSystem implements IRideSharingSystem {
 
             while ((lineRead = bufferedReader.readLine()) != null) {
                 String[] row = lineRead.split(",");
-                //int rideId = generateUniqueRideId();                 // No ride id column; rely on a private auxilary method.
+                int rideId = generateUniqueRideId();                 // No ride id column; rely on a private auxilary method.
                 String rideType = row[0];
                 String pickupLocation = row[1];
                 String pickupTimeString = row[2];
@@ -354,8 +354,28 @@ public class RideSharingSystem implements IRideSharingSystem {
         return rideList.findByRiderName(riderName);
     }
 
-    public LinkedList<IRider> getSharedRideParticipants(String pickupLocation) {  
+    public LinkedList<IRider> getSharedRideParticipants(String pickupLocation) {   //PickupLocation is not unique. Therefore, we will traverse every shared ride associated with that pick up location instead.
+        LinkedList<IRider> result = new LinkedList<IRider>();                      
+        LinkedList<IRide> rideList = this.rideList.findByPickupLocation(pickupLocation);
+        Node<IRide> currentRideNode = rideList.getHead();
 
+        while (currentRideNode != null) {
+            IRide ride = currentRideNode.getData();
+            
+            if (ride instanceof SharedRide) {         // Traverse all shared rides from rideList.
+                LinkedList<IRider> participants = ((SharedRide)ride).getParticipants();
+                Node<IRider> currentParticipantNode = participants.getHead();
+
+                while (currentParticipantNode != null) {              // Traverse each participant from each shared ride.
+                    IRider rider = currentParticipantNode.getData();
+                    result.insertAtBack(rider);
+
+                    currentParticipantNode = currentParticipantNode.getNext();
+                }
+            }
+            currentRideNode = currentRideNode.getNext();
+        }
+        return result;
     }
 
     public LinkedList<IRide> getAllRidesAlphabetically() {  

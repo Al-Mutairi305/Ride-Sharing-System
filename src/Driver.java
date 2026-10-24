@@ -15,21 +15,21 @@ public class Driver extends Person implements IDriver {
 
     public void setVehiclePlate(String vehiclePlate) throws IllegalArgumentException {
         if (vehiclePlate.length() != 7)
-            throw new IllegalArgumentException("Invalid vehicle plate!");
+            throw new IllegalArgumentException("Invalid vehicle plate.");
 
         int i;
         for (i = 0; i < 3; i++) {
             if (Character.isUpperCase(vehiclePlate.charAt(i)))
                 continue;
             else
-                throw new IllegalArgumentException("Invalid vehicle plate!");
+                throw new IllegalArgumentException("Invalid vehicle plate.");
         }
 
         for (i = 3; i < 7; i++) {
             if (Character.isDigit(vehiclePlate.charAt(i)))
                 continue;
             else
-                throw new IllegalArgumentException("Invalid vehicle plate!");
+                throw new IllegalArgumentException("Invalid vehicle plate.");
         }
 
         this.vehiclePlate = vehiclePlate;

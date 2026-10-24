@@ -30,13 +30,13 @@ public abstract class Person implements IPerson {
 
     public void setPhoneNumber(String phoneNumber) throws IllegalArgumentException {
         if (phoneNumber.length() != 10)
-            throw new IllegalArgumentException("Invalid phone number!");
+            throw new IllegalArgumentException("Invalid phone number, must be 10 digits.");
 
         for (int i = 0; i < phoneNumber.length(); i++) {
             if (Character.isDigit(phoneNumber.charAt(i)))
                 continue;
             else
-                throw new IllegalArgumentException("Invalid phone number!");
+                throw new IllegalArgumentException("Invalid phone number, must be 10 digits.");
         }
 
         this.phoneNumber = phoneNumber;

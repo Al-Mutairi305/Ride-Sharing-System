@@ -76,23 +76,6 @@ public class LinkedList<T> {
         return result;
     }
 
-    public void print() {
-
-        if (size == 0) {
-            System.out.println("No results");
-            return;
-        }
-        
-        Node<T> current = head;
-
-        for (int i = 1; i <= size; i++) {
-            System.out.println("#"+ i + "\n" + current.getData());
-            if (i != size) 
-                System.out.println("----------------------------------------------------------------");  // 64 hyphens
-            current = current.getNext();
-        }
-    }
-
     public boolean isEmpty() {
         return (size == 0);
     }
@@ -103,5 +86,9 @@ public class LinkedList<T> {
 
     public Node<T> getTail() {
         return tail;
+    }
+
+    public int getSize() {
+        return size;
     }
 }
