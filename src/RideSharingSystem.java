@@ -318,7 +318,19 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public boolean schedulePrivateRide(String pickupLocation, IDateTime pickupTime, IDateTime dropoffTime, String dropoffLocation, int riderId, int driverId){
-
+        // Checks if rider and driver exist.
+        if (riderList.findById(riderId) != null && driverList.findById(driverId) != null) {
+            int rideID = generateUniqueRideId();
+            IDriver driver = driverList.findById(driverId);
+            IRider rider = riderList.findById(riderId);
+            IRide ride = new PrivateRide(rideID, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
+            // Checks that there is no conflict in schedule.
+            if (!hasConflict(ride)) {
+                rideList.addRide(ride);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean scheduleSharedRide(String pickupLocation, IDateTime pickupTime, IDateTime dropoffTime, String dropoffLocation, int[] riderIds, int driverId) {
