@@ -101,6 +101,7 @@ public class RideSharingSystem implements IRideSharingSystem {
             bufferedReader = new BufferedReader(fileReader);
 
             while ((lineRead = bufferedReader.readLine()) != null) {
+                // Format of each line is "RIDETYPE, PICKUPLOCATION, PICKUPDATE, DROPOFFDATE, DROPOFFLOCATION, DRIVERID, RIDERID(s)"
                 String[] row = lineRead.split(",");
                 String rideType = row[0];
                 String pickupLocation = row[1];
@@ -292,6 +293,9 @@ public class RideSharingSystem implements IRideSharingSystem {
             IRide ride = new PrivateRide(rideID, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
             // Checks that there is no conflict in schedule.
             if (!hasConflict(ride)) {
+                // Adds ride to driver and rider's ride histories.
+                ((Person) driver).addToRideHistory(ride);
+                ((Person) rider).addToRideHistory(ride);
                 rideList.addRide(ride);
                 return true;
             }
@@ -331,7 +335,7 @@ public class RideSharingSystem implements IRideSharingSystem {
             ((Person)rider).addToRideHistory(sharedRide);
 
             currentRiderNode = currentRiderNode.getNext();
-        }            
+        }
         
         rideList.addRide(sharedRide);
         return true;
