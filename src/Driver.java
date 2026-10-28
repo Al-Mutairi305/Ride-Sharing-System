@@ -3,7 +3,8 @@ public class Driver extends Person implements IDriver {
     private String vehiclePlate;
     private VehicleType vehicleType;
 
-    public Driver(int id, String name, String phoneNumber, String vehiclePlate, VehicleType vehicleType) throws IllegalArgumentException {
+    public Driver(int id, String name, String phoneNumber, String vehiclePlate, VehicleType vehicleType)
+            throws IllegalArgumentException {
         super(id, name, phoneNumber);
         setVehiclePlate(vehiclePlate);
         this.vehicleType = vehicleType;
@@ -15,21 +16,21 @@ public class Driver extends Person implements IDriver {
 
     public void setVehiclePlate(String vehiclePlate) throws IllegalArgumentException {
         if (vehiclePlate.length() != 7)
-            throw new IllegalArgumentException("Invalid vehicle plate.");
+            throw new IllegalArgumentException("Invalid vehicle plate, must have exactly 3 uppercase letters at start followed by 4 digits.");
 
         int i;
         for (i = 0; i < 3; i++) {
             if (Character.isUpperCase(vehiclePlate.charAt(i)))
                 continue;
             else
-                throw new IllegalArgumentException("Invalid vehicle plate.");
+                throw new IllegalArgumentException("Invalid vehicle plate, must have exactly 3 uppercase letters at start followed by 4 digits.");
         }
 
         for (i = 3; i < 7; i++) {
             if (Character.isDigit(vehiclePlate.charAt(i)))
                 continue;
             else
-                throw new IllegalArgumentException("Invalid vehicle plate.");
+                throw new IllegalArgumentException("Invalid vehicle plate, must have exactly 3 uppercase letters at start followed by 4 digits.");
         }
 
         this.vehiclePlate = vehiclePlate;

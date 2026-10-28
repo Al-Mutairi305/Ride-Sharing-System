@@ -354,7 +354,7 @@ public class RideSharingSystem implements IRideSharingSystem {
         return rideList.findByRiderName(riderName);
     }
 
-    public LinkedList<IRider> getSharedRideParticipants(String pickupLocation) {   //PickupLocation is not unique. Therefore, we will traverse every shared ride associated with that pick up location instead.
+    public LinkedList<IRider> getSharedRideParticipants(String pickupLocation) {   // PickupLocation is not unique. Therefore, we will traverse every shared ride associated with that pick up location instead.
         LinkedList<IRider> result = new LinkedList<IRider>();                      
         LinkedList<IRide> rideList = this.rideList.findByPickupLocation(pickupLocation);
         Node<IRide> currentRideNode = rideList.getHead();
