@@ -58,6 +58,6 @@ public class DateTime implements IDateTime {
             return Integer.compare(this.hour, other.getHour());
         }
         return Integer.compare(this.minute, other.getMinute());
-    }       
+    }
     
 }

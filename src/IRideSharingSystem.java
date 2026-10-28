@@ -3,27 +3,27 @@
  * The interface of the Ride-Sharing System.
  */
 public interface IRideSharingSystem {
-	// Loads riders from a CSV file.
-	// Returns true if loading succeeds; false otherwise.
-	boolean loadRidersFromCSV(String ridersFilePath);
+    // Loads riders from a CSV file.
+    // Returns true if loading succeeds; false otherwise.
+    boolean loadRidersFromCSV(String ridersFilePath);
 
-	// Loads drivers from a CSV file.
-	// Returns true if loading succeeds; false otherwise.
-	boolean loadDriversFromCSV(String driversFilePath);
+    // Loads drivers from a CSV file.
+    // Returns true if loading succeeds; false otherwise.
+    boolean loadDriversFromCSV(String driversFilePath);
 
-	// Loads rides from a CSV file. All referenced riders and the assigned driver must already exist. It must enforce conflict rules
-	// Returns true if loading succeeds; false otherwise.
-	boolean loadRidesFromCSV(String ridesFilePath);
+    // Loads rides from a CSV file. All referenced riders and the assigned driver must already exist. It must enforce conflict rules
+    // Returns true if loading succeeds; false otherwise.
+    boolean loadRidesFromCSV(String ridesFilePath);
 
     //Adds a rider to the system after enforcing uniqueness by ID. Returns true if added; false if duplicate ID or invalid
-     boolean addRider(IRider rider);
+    boolean addRider(IRider rider);
 
     /**
      * Adds a driver to the system after enforcing uniqueness by ID and by
      * vehicle plate number (no two drivers may share the same plate).
      * Returns true if added; false if duplicate ID, duplicate plate, or invalid
      */
-     boolean addDriver(IDriver driver);
+    boolean addDriver(IDriver driver);
 
     //Searches for a rider by ID.
     IRider searchRiderById(int riderId);

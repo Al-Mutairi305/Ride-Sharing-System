@@ -14,7 +14,7 @@ public class Main {
 
         for (int i = 1; i <= size; i++) {
             System.out.println("#"+ i + "\n" + current.getData());
-            if (i != size) 
+            if (i != size)
                 System.out.println("----------------------------------------------------------------");
             current = current.getNext();
         }
@@ -35,7 +35,7 @@ public class Main {
         System.out.println("----------------------------------------------------------------");
 
         boolean isRunning = true;
-        while (isRunning) {   
+        while (isRunning) {
             System.out.println("---(Main Menu)---\n");                      // Main menu.
             System.out.println("1. List all riders.\n\n2. Search for riders by home city.\n\n3. Search for riders by name."
             +"\n\n4. Add a rider.\n\n5. List all drivers.\n\n6. Search for drivers by vehicle type."
@@ -55,7 +55,7 @@ public class Main {
                 break;
 
                 case 0:  // Exit.
-                isRunning = false;   
+                isRunning = false;
                 break;
 
                 case 1:  // List all riders.
