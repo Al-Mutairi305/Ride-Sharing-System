@@ -102,7 +102,6 @@ public class RideSharingSystem implements IRideSharingSystem {
 
             while ((lineRead = bufferedReader.readLine()) != null) {
                 String[] row = lineRead.split(",");
-                int rideId = generateUniqueRideId();                 // No ride id column; rely on a private auxilary method.
                 String rideType = row[0];
                 String pickupLocation = row[1];
                 String pickupTimeString = row[2];
@@ -113,18 +112,10 @@ public class RideSharingSystem implements IRideSharingSystem {
                 IDateTime dropoffTime = new DateTime(dropoffTimeArray[0], dropoffTimeArray[1], dropoffTimeArray[2], dropoffTimeArray[3], dropoffTimeArray[4]);
                 String dropoffLocation = row[4];
                 int driverId = Integer.parseInt(row[5]);
-                IDriver driver = driverList.findById(driverId);
                 
                 if (rideType.equals("PRIVATE")) {
                     int riderId = Integer.parseInt(row[6]);
-                    IRider rider = riderList.findById(riderId);
-                    IRide privateRide = new PrivateRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
-                    
-                    if (!hasConflict(privateRide)) {
-                        ((Person)driver).addToRideHistory(privateRide);
-                        ((Person)rider).addToRideHistory(privateRide);
-                        rideList.addRide(privateRide);
-                    }
+                    schedulePrivateRide(pickupLocation, pickupTime, dropoffTime, dropoffLocation, riderId, driverId);
                     
             
                 } else {
@@ -135,32 +126,7 @@ public class RideSharingSystem implements IRideSharingSystem {
                         riderIds[i] = Integer.parseInt(riders[i]);
 
                     scheduleSharedRide(pickupLocation, pickupTime, dropoffTime, dropoffLocation, riderIds, driverId);
-                    /*try {
-                        int i = 0;
-                        while (true) {
-                            int riderId = Integer.parseInt(riders[i]);
-                            IRider rider = this.riderList.findById(riderId);     // This line will not throw NullPointerException if all riders from the "riders_100.csv" file have been loaded beforehand.
-                            ((SharedRide)sharedRide).addParticipant(rider);
-                            i++;
-                        }
 
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        // Finish reading all of the riders. Automatically breaks from the loop.
-                    }
-
-                    if (!hasConflict(sharedRide)) {   // If the ride does not have any conflicts, add it to the rideHistory of each person associated with it, then add it to list.
-                        ((Person)driver).addToRideHistory(sharedRide);  // Method is not visible if reference is IDriver. No risk of ClassCastException being thrown here because every Driver instantiated is a Person.
-
-                        LinkedList<IRider> ridersList = ((SharedRide)sharedRide).getParticipants();
-                        Node<IRider> currentRiderNode = ridersList.getHead();
-                        while (currentRiderNode != null) {
-                            IRider rider = currentRiderNode.getData();
-                            ((Person)rider).addToRideHistory(sharedRide);
-                            currentRiderNode = currentRiderNode.getNext();
-                        }
-
-                        rideList.addRide(sharedRide);
-                    } */
                 }
                 
             }
@@ -349,11 +315,24 @@ public class RideSharingSystem implements IRideSharingSystem {
                 if (rider == null)
                     return false;
                 ((SharedRide)sharedRide).addParticipant(rider);
+                
         }
 
         if (hasConflict(sharedRide))
             return false;
 
+        ((Person)driver).addToRideHistory(sharedRide);                 // Add the ride to the system's list, driver's ride history, and each rider's ride history.
+        
+        LinkedList<IRider> sharedRiderList = ((SharedRide)sharedRide).getParticipants();
+        Node<IRider> currentRiderNode = sharedRiderList.getHead();
+
+        while (currentRiderNode != null) {        // Same iterations as previous for loop.
+            IRider rider = currentRiderNode.getData();
+            ((Person)rider).addToRideHistory(sharedRide);
+
+            currentRiderNode = currentRiderNode.getNext();
+        }            
+        
         rideList.addRide(sharedRide);
         return true;
     }
