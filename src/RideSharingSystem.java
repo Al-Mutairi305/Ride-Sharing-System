@@ -1,5 +1,5 @@
 /* Each team memmber must implement the RideSharingSystem class's methods that correspond to their designated list class as follows:
-Khaled --> DriverList 
+Khaled --> DriverList
 Omar --> RiderList
 Abdulelah --> RideList
 */
@@ -17,8 +17,8 @@ public class RideSharingSystem implements IRideSharingSystem {
         rideList = new RideList();
     }
 
-    public boolean loadRidersFromCSV(String ridersFilePath) throws IllegalArgumentException {   
-          BufferedReader bufferedReader = null;
+    public boolean loadRidersFromCSV(String ridersFilePath) throws IllegalArgumentException {
+        BufferedReader bufferedReader = null;
         String lineRead = "";
 
         try {
@@ -92,7 +92,7 @@ public class RideSharingSystem implements IRideSharingSystem {
         return true;
     }
 
-	public boolean loadRidesFromCSV(String ridesFilePath) {
+    public boolean loadRidesFromCSV(String ridesFilePath) {
         BufferedReader bufferedReader = null;
         String lineRead = "";
 
@@ -128,16 +128,16 @@ public class RideSharingSystem implements IRideSharingSystem {
                     
             
                 } else {
-                    String[] riders = row[6].split(";");           // Split the 7th column which contains the riders' ids, each separated by ";", then store them in an array. 
+                    String[] riders = row[6].split(";");           // Split the 7th column which contains the riders' ids, each separated by ";", then store them in an array.
                     int[] riderIds = new int[riders.length];
 
-                    for (int i = 0; i < riderIds.length; i++) 
+                    for (int i = 0; i < riderIds.length; i++)
                         riderIds[i] = Integer.parseInt(riders[i]);
 
                     scheduleSharedRide(pickupLocation, pickupTime, dropoffTime, dropoffLocation, riderIds, driverId);
                     /*try {
                         int i = 0;
-                        while (true) {                                    
+                        while (true) {
                             int riderId = Integer.parseInt(riders[i]);
                             IRider rider = this.riderList.findById(riderId);     // This line will not throw NullPointerException if all riders from the "riders_100.csv" file have been loaded beforehand.
                             ((SharedRide)sharedRide).addParticipant(rider);
@@ -161,9 +161,9 @@ public class RideSharingSystem implements IRideSharingSystem {
 
                         rideList.addRide(sharedRide);
                     } */
-                } 
+                }
                 
-            } 
+            }
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -196,7 +196,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public boolean addDriver(IDriver driver) {   // We will assume that "Invalid" refers to invalid phone number or vehicle plate
-        try {                                                      
+        try {
             driver.setPhoneNumber(driver.getPhoneNumber());    // Check if information are valid inside the try-catch block.
             driver.setVehiclePlate(driver.getVehiclePlate());
 
@@ -246,7 +246,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     public boolean removeRider(int riderId) {
         IRider rider = searchRiderById(riderId);
         if (rider == null)                          // Check if the rider does not exist.
-         return false;
+        return false;
         
         LinkedList<IRide> rideHistory = rider.getRideHistory();             // Get all rides associated with the rider to remove them.
         Node<IRide> currentRideNode = rideHistory.getHead();
@@ -260,7 +260,7 @@ public class RideSharingSystem implements IRideSharingSystem {
                 ((Person)driver).removeFromRideHistory(ride.getRideId());
                 ((Person)rider).removeFromRideHistory(ride.getRideId());
 
-            } else {                                          
+            } else {
                 ((SharedRide)ride).removeParticipantById(riderId);
                 ((Person)rider).removeFromRideHistory(ride.getRideId());
 
@@ -318,7 +318,19 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public boolean schedulePrivateRide(String pickupLocation, IDateTime pickupTime, IDateTime dropoffTime, String dropoffLocation, int riderId, int driverId){
-
+        // Checks if rider and driver exist.
+        if (riderList.findById(riderId) != null && driverList.findById(driverId) != null) {
+            int rideID = generateUniqueRideId();
+            IDriver driver = driverList.findById(driverId);
+            IRider rider = riderList.findById(riderId);
+            IRide ride = new PrivateRide(rideID, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime, rider);
+            // Checks that there is no conflict in schedule.
+            if (!hasConflict(ride)) {
+                rideList.addRide(ride);
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean scheduleSharedRide(String pickupLocation, IDateTime pickupTime, IDateTime dropoffTime, String dropoffLocation, int[] riderIds, int driverId) {
@@ -329,7 +341,7 @@ public class RideSharingSystem implements IRideSharingSystem {
         IRide sharedRide = new SharedRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime);
 
         for (int i = 0; i < riderIds.length; i++) {
-                if (riderIds[i] == 0)                         // No rider can have an ID of 0. Therefore, riderIds[i] == 0 indicates that the array has been exhausted. 
+                if (riderIds[i] == 0)                         // No rider can have an ID of 0. Therefore, riderIds[i] == 0 indicates that the array has been exhausted.
                     break;
 
                 int riderId = riderIds[i];
@@ -346,16 +358,16 @@ public class RideSharingSystem implements IRideSharingSystem {
         return true;
     }
 
-    public LinkedList<IRide> searchRidesByPickupLocation(String pickupLocation) {  
+    public LinkedList<IRide> searchRidesByPickupLocation(String pickupLocation) {
         return rideList.findByPickupLocation(pickupLocation);
     }
 
-    public LinkedList<IRide> searchRidesByRiderName(String riderName) {   
+    public LinkedList<IRide> searchRidesByRiderName(String riderName) {
         return rideList.findByRiderName(riderName);
     }
 
     public LinkedList<IRider> getSharedRideParticipants(String pickupLocation) {   // PickupLocation is not unique. Therefore, we will traverse every shared ride associated with that pick up location instead.
-        LinkedList<IRider> result = new LinkedList<IRider>();                      
+        LinkedList<IRider> result = new LinkedList<IRider>();
         LinkedList<IRide> rideList = this.rideList.findByPickupLocation(pickupLocation);
         Node<IRide> currentRideNode = rideList.getHead();
 
@@ -378,7 +390,7 @@ public class RideSharingSystem implements IRideSharingSystem {
         return result;
     }
 
-    public LinkedList<IRide> getAllRidesAlphabetically() {  
+    public LinkedList<IRide> getAllRidesAlphabetically() {
         return rideList.getAllAlphabetically();
     }
 
@@ -413,7 +425,7 @@ public class RideSharingSystem implements IRideSharingSystem {
             IRide currentRide = current.getData();
 
             if (currentRide instanceof PrivateRide) {         // Compare the private ride with the passed ride.
-                int riderId = ((PrivateRide)currentRide).getRider().getId(); 
+                int riderId = ((PrivateRide)currentRide).getRider().getId();
                 
                 if (currentRide.getDriver().getId() == ride.getDriver().getId()    // Check if both rides have common driver or rider.
                 || ride.hasRider(riderId)) {
@@ -432,7 +444,7 @@ public class RideSharingSystem implements IRideSharingSystem {
                     if (currentRide.getDriver().getId() == ride.getDriver().getId()
                     || ride.hasRider(riderId))  {
 
-                        if (ride.getPickupTime().compareTo(currentRide.getDropoffTime()) <0 && currentRide.getPickupTime().compareTo(ride.getDropoffTime()) < 0 )  
+                        if (ride.getPickupTime().compareTo(currentRide.getDropoffTime()) <0 && currentRide.getPickupTime().compareTo(ride.getDropoffTime()) < 0 )
                         return true;
                     }
 
@@ -483,7 +495,7 @@ public class RideSharingSystem implements IRideSharingSystem {
             currentRideNode = currentRideNode.getNext();
         }
 
-        return maxId+1; 
+        return maxId+1;
 
     }
 

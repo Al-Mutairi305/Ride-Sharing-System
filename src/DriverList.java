@@ -195,7 +195,7 @@ public class DriverList implements IDriverList {
         Node<IDriver> current = head;
 
         while (current != null) {
-            if (current.getData().getName().equals(fullName)) {      
+            if (current.getData().getName().equals(fullName)) {
                 removeById(current.getData().getId());
                 count++;
             }
@@ -212,7 +212,7 @@ public class DriverList implements IDriverList {
         Node<IDriver> current = head;
 
         while (current != null) {
-            if (current.getData().getVehicleType() == vehicleType) {      
+            if (current.getData().getVehicleType() == vehicleType) {
                 removeById(current.getData().getId());
                 count++;
             }

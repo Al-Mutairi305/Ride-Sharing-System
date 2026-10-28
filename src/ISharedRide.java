@@ -1,6 +1,6 @@
 /**
-	* Represents a shared ride (carpool) involving multiple riders.
-*/
+ * Represents a shared ride (carpool) involving multiple riders.
+ */
 public interface ISharedRide extends IRide {
 
 // Returns the list of shared ride participants.
