@@ -1,3 +1,10 @@
+package system;
+
+import ride.IRide;
+import ride.IRideList;
+import ride.RideList;
+
+
 public abstract class Person implements IPerson {
 
     protected String name;

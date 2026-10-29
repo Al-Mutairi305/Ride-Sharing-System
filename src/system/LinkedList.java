@@ -1,3 +1,4 @@
+package system;
 
 // Generic LinkedList class that will act as a result list for methods that return a list.
 import java.util.NoSuchElementException;

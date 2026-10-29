@@ -1,3 +1,7 @@
+package rider;
+import system.LinkedList;
+import system.Node;
+
 public class RiderList implements IRiderList {
 
     private Node<IRider> head;

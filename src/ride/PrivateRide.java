@@ -1,3 +1,8 @@
+package ride;
+import driver.IDriver;
+import rider.IRider;
+import system.IDateTime;
+
 public class PrivateRide extends Ride implements IPrivateRide{
     private IRider rider;
 
