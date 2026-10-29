@@ -311,14 +311,13 @@ public class RideSharingSystem implements IRideSharingSystem {
         IRide sharedRide = new SharedRide(rideId, pickupLocation, dropoffLocation, driver, pickupTime, dropoffTime);
 
         for (int i = 0; i < riderIds.length; i++) {
-                if (riderIds[i] == 0)                         // No rider can have an ID of 0. Therefore, riderIds[i] == 0 indicates that the array has been exhausted.
-                    break;
-
-                int riderId = riderIds[i];
-                IRider rider = searchRiderById(riderId);
-                if (rider == null)
+                    
+                    int riderId = riderIds[i];
+                    IRider rider = searchRiderById(riderId);
+                    if (rider == null)
                     return false;
-                ((SharedRide)sharedRide).addParticipant(rider);
+                    ((SharedRide)sharedRide).addParticipant(rider);   // addParticipants ensure no duplicates will be added.
+
                 
         }
 
@@ -350,7 +349,7 @@ public class RideSharingSystem implements IRideSharingSystem {
     }
 
     public LinkedList<IRider> getSharedRideParticipants(String pickupLocation) {   // PickupLocation is not unique. Therefore, we will traverse every shared ride associated with that pick up location instead.
-        LinkedList<IRider> result = new LinkedList<IRider>();
+        IRiderList result = new RiderList();                                              
         LinkedList<IRide> rideList = this.rideList.findByPickupLocation(pickupLocation);
         Node<IRide> currentRideNode = rideList.getHead();
 
@@ -363,14 +362,14 @@ public class RideSharingSystem implements IRideSharingSystem {
 
                 while (currentParticipantNode != null) {              // Traverse each participant from each shared ride.
                     IRider rider = currentParticipantNode.getData();
-                    result.insertAtBack(rider);
+                    result.add(rider);                                         // Using IRiderList's add method to prevent duplicate riders.
 
                     currentParticipantNode = currentParticipantNode.getNext();
                 }
             }
             currentRideNode = currentRideNode.getNext();
         }
-        return result;
+        return result.getAll();
     }
 
     public LinkedList<IRide> getAllRidesAlphabetically() {
@@ -427,7 +426,7 @@ public class RideSharingSystem implements IRideSharingSystem {
                     if (currentRide.getDriver().getId() == ride.getDriver().getId()
                     || ride.hasRider(riderId))  {
 
-                        if (ride.getPickupTime().compareTo(currentRide.getDropoffTime()) <0 && currentRide.getPickupTime().compareTo(ride.getDropoffTime()) < 0 )
+                        if (ride.getPickupTime().compareTo(currentRide.getDropoffTime()) < 0 && currentRide.getPickupTime().compareTo(ride.getDropoffTime()) < 0 )
                         return true;
                     }
 
@@ -442,22 +441,6 @@ public class RideSharingSystem implements IRideSharingSystem {
         return false;
          
          
-    }
-
-    // Temporary method for testing purposes.
-    public LinkedList<IRide> test(int driverId) {
-        LinkedList<IRide> l1 = rideList.getAllAlphabetically();
-        LinkedList<IRide> l2 = new LinkedList<IRide>();
-        Node<IRide> current = l1.getHead();
-
-        while (current != null) {
-            if (current.getData().getDriver().getId() == driverId)
-                l2.insertAtBack(current.getData());
-            
-            current = current.getNext();
-        }
-
-        return l2;
     }
 
     // Method that generates a unique ride id for every ride scheduled. No risk of duplicate ids since there is 1 generation per insertion.
