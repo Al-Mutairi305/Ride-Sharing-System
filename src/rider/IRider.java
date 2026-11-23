@@ -1,3 +1,6 @@
+package rider;
+import system.IPerson;
+
 /**
  * Represents a single rider in the ride-sharing system.
  * Riders are compared by ID.

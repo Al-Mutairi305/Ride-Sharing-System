@@ -1,3 +1,6 @@
+package rider;
+import system.Person;
+
 public class Rider extends Person implements IRider {
 
     private String email;

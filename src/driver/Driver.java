@@ -1,3 +1,6 @@
+package driver;
+import system.Person;
+
 public class Driver extends Person implements IDriver {
 
     private String vehiclePlate;

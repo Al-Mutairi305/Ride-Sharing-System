@@ -1,5 +1,12 @@
+package system;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import driver.Driver;
+import driver.IDriver;
+import driver.VehicleType;
+import rider.IRider;
+import rider.Rider;
 
 public class Main {
 
@@ -55,7 +62,7 @@ public class Main {
                 System.out.println("\nFail to add ride; Minute must be between 0-59");
                 return null;
             }
-
+            
             IDateTime date = new DateTime(year, month, day, hour, minute);
             return date;
 
@@ -136,16 +143,17 @@ public class Main {
         IRideSharingSystem rideSharingSystem = new RideSharingSystem();
         System.out.println("Starting the Ride Sharing System...");
         System.out.println("Loading 30 drivers...");
-        rideSharingSystem.loadDriversFromCSV("Phase 1\\drivers_30.csv");
+        rideSharingSystem.loadDriversFromCSV("src\\CSV Files\\drivers_30.csv");
         System.out.println("Loading 100 riders...");
-        rideSharingSystem.loadRidersFromCSV("Phase 1\\riders_100.csv");
+        rideSharingSystem.loadRidersFromCSV("src\\CSV Files\\riders_100.csv");
         System.out.println("Loading 40 rides...");
-        rideSharingSystem.loadRidesFromCSV("Phase 1\\rides_40.csv");
+        rideSharingSystem.loadRidesFromCSV("src\\CSV Files\\rides_40.csv");
         System.out.println("----------------------------------------------------------------");
         System.out.println("Welcome to the Ride Sharing System!");
         System.out.println("----------------------------------------------------------------");
 
         boolean isRunning = true;
+        
         while (isRunning) {
             System.out.println("---(Main Menu)---\n"); // Main menu.
             System.out.println(

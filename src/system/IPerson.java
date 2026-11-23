@@ -1,3 +1,8 @@
+package system;
+
+import ride.IRide;
+
+
 /**
  * Common fields and behavior shared by every person in the ride-sharing
  * system (riders and drivers). IRider and IDriver both extend this interface.

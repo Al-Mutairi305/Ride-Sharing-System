@@ -1,3 +1,7 @@
+package ride;
+import driver.IDriver;
+import system.IDateTime;
+
 public abstract class Ride implements IRide {
 
     protected int rideID;

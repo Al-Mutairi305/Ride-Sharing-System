@@ -1,4 +1,9 @@
-class RideList implements IRideList {
+package ride;
+import rider.IRider;
+import system.LinkedList;
+import system.Node;
+
+public class RideList implements IRideList {
 
     private Node<IRide> head;
     private Node<IRide> tail;
